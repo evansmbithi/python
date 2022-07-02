@@ -4,13 +4,13 @@
 
 - Place yourself in new_env/ and create a virtual environment inside.
 <pre>
-$ python -m venv env
+    $ python -m venv env
 </pre>
 
 - Activate the virtual environment and place yourself in the <em>src</em> directory
 <pre>
-$ source env/bin/activate
-$ cd src
+    $ source env/bin/activate
+    $ cd src
 </pre>
 
 - Restore the project by using <strong>pip install -r requirements.txt</strong>. It will look for requirements.txt and fetch and install the packages listed for that file.
