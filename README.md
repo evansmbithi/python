@@ -13,7 +13,7 @@
     $ cd src
 </pre>
 
-- Restore the project by using <strong>pip install -r requirements.txt</strong>. It will look for requirements.txt and fetch and install the packages listed for that file.
+- Restore the project by using <span style="color:skyblue">pip install -r requirements.txt</span>. It will look for requirements.txt and fetch and install the packages listed for that file.
 
 - Install a specific package pip install python-dateutil===2.7.4
 
