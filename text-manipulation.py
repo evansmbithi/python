@@ -3,7 +3,6 @@ On average, the Moon moves 4cm away from the Earth every year. This yearly drift
 The highest daylight temperature of the Moon is 127 C."""
 
 # break the paragraph into difference sentences
-
 sentences = text.split('. ')
 # print(sentences)
 
