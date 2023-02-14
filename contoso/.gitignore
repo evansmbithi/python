@@ -1,3 +1,4 @@
+# it's always good practice to ignore the .env for security reasons
 # .env
 venv/
 __pycache__/

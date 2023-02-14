@@ -1,0 +1,27 @@
+{% include 'partials/header.html' %}
+
+<h1>
+    Hi, {{currentuser}}
+</h1>
+
+<ul>
+{% for post in posts %}
+    <li>
+        <a href="{% url 'single' post.id %}">
+            {{post.title}} - {{post.id}}
+        </a>        
+    </li>
+{% endfor %} 
+</ul>
+
+<div class="pagination">
+    {% if posts.has_previous %}
+        <a href="?page={{posts.previous_page_number}}">prev </a>
+    {% endif %}
+    {% if posts.has_next %}
+        <a href="?page={{posts.next_page_number}}">next </a>
+    {% endif %}
+
+    Page {{posts.number}} of {{posts.paginator.num_pages}}
+</div>
+{% include 'partials/footer.html' %}
