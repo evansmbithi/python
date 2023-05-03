@@ -14,15 +14,26 @@ class TestStack(TestCase):
 
     def test_push(self):
         """Test pushing an item into the stack"""
-        raise Exception("not implemented")
+        # raise Exception("not implemented")
+        self.stack.push(3)
+        self.assertEqual(self.stack.peek(), 3)
 
     def test_pop(self):
         """Test popping an item of off the stack"""
-        raise Exception("not implemented")
+        # raise Exception("not implemented")
+        self.stack.push(5)
+        self.stack.push(33)
+        self.assertEqual(self.stack.pop(), 33)
+        self.assertEqual(self.stack.peek(), 5)
+        self.stack.pop()
+        self.assertTrue(self.stack.is_empty())
 
     def test_peek(self):
         """Test peeking at the top the stack"""
-        raise Exception("not implemented")
+        # raise Exception("not implemented")
+        self.stack.push(5)
+        self.stack.push(33)
+        self.assertEqual(self.stack.peek(), 33)
 
     def test_is_empty(self):
         """Test if the stack is empty"""
