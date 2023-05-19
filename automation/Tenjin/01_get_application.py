@@ -2,8 +2,8 @@ import csv
 import time
 
 from selenium.webdriver.common.by import By
-from script import switch_to_content_frame, driver, logout
 from selenium.webdriver.support.ui import Select
+from script import switch_to_content_frame, driver, logout
 
 switch_to_content_frame()
 
@@ -14,7 +14,7 @@ with open('menus.csv', newline='') as csvfile:
     # Initialize an empty list to store the column data
     menus = []
 
-    # Loop through each row in the CSV file
+    # Loop through each row in the first column
     for row in reader:        
         menus.append(row[0])
 
@@ -33,7 +33,11 @@ while counter <= len(menus):
     initial_learnt = 0
     col1 = ''
     col2 = ''
-    print(counter, ',', menus[counter])
+    try:
+        print(counter, ',', menus[counter])
+    except IndexError:
+        print('Process Complete')
+        break
 
     for index in range(1, len(options)):
         # select.select_by_index(index)
@@ -42,8 +46,6 @@ while counter <= len(menus):
         getOption = option.get_attribute('innerHTML')
         
         # print(initial_learnt)
-        
-        
 
         time.sleep(2)
         # click go
@@ -55,26 +57,66 @@ while counter <= len(menus):
         search = driver.find_element(By.ID, 'functionsTable_search')
         search.send_keys(menus[counter])
 
-        # get search result
-        try:
-            # menu name
-            result = driver.find_element(By.CSS_SELECTOR, "#functionsTable td:nth-child(2)")
-        except:
-            # print('No match found')
-            continue            
-        
-        # if result available:
-        #   take the application option
+        row_number = 1
         col1 = menus[counter] # function code/menu item
-        fields_learnt = driver.find_element(By.CSS_SELECTOR, "#functionsTable > tbody > tr > td:nth-child(7)").get_attribute('innerHTML')
-        
 
-        if col1 == result.get_attribute('innerHTML'):
-            if fields_learnt != 'N/A':
-                no_of_fields = int(fields_learnt) # convert to integer
-                if no_of_fields > initial_learnt:
-                    initial_learnt = no_of_fields
-                    col2 = getOption                 
+        #Do...While loop
+
+        # get search result
+        # try:
+        #     # menu name
+        #     result = driver.find_element(By.CSS_SELECTOR, "#functionsTable td:nth-child(2)")
+        # except:
+        #     # print('No match found')
+        #     continue            
+        
+        # # if result available:
+        # # capture fields learnt
+        # fields_learnt = driver.find_element(By.CSS_SELECTOR, f"#functionsTable > tbody > tr:nth-child({row_number}) > td:nth-child(7)").get_attribute('innerHTML')
+        
+       
+        # while col1 != result.get_attribute('innerHTML'):
+            
+        #     # get search result
+        #     try:
+        #         # menu name
+        #         result = driver.find_element(By.CSS_SELECTOR, f"#functionsTable > tbody > tr:nth-child({row_number+1}) > td:nth-child(2)")
+        #     except:
+        #         # print('No match found')
+        #         continue            
+            
+        #     # if result available:
+        #     #   take the application option
+        #     fields_learnt = driver.find_element(By.CSS_SELECTOR, f"#functionsTable > tbody > tr:nth-child({row_number+1}) > td:nth-child(7)").get_attribute('innerHTML')
+
+        # loop through child elements of results tbody
+        parent_node = driver.find_element(By.CSS_SELECTOR, f"#functionsTable > tbody")
+        # child_nodes = parent_node.find_elements(By.XPATH, "./child::*")
+        child_nodes = parent_node.find_elements(By.XPATH, "./tr")
+
+        # print(len(child_nodes))
+
+        for item in child_nodes:
+            # print(item.get_attribute('innerHTML'))
+
+            # get search result
+            try:
+                # menu name
+                result = driver.find_element(By.CSS_SELECTOR, "#functionsTable td:nth-child(2)")
+            except:
+                # print('No match found')
+                continue            
+            
+            # if result available:
+            # capture fields learnt
+            fields_learnt = driver.find_element(By.CSS_SELECTOR, f"#functionsTable > tbody > tr > td:nth-child(7)").get_attribute('innerHTML')
+        
+            if col1 == result.get_attribute('innerHTML'):
+                if fields_learnt != 'N/A':
+                    no_of_fields = int(fields_learnt) # convert to integer
+                    if no_of_fields > initial_learnt:
+                        initial_learnt = no_of_fields
+                        col2 = getOption                
                 
     # insert row to 2d array
     array_out.insert(counter, [col1, col2, initial_learnt])

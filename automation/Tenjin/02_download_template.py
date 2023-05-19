@@ -26,7 +26,7 @@ for counter in range(0, len(menus)):
     # loop through the application options
     select = Select(driver.find_element(By.CSS_SELECTOR, 'select#application'))
 
-    # select the Option value by visible text
+    # select the application Option value by visible text
     select.select_by_visible_text(applications[counter])
     # click go
     driver.find_element(By.ID, 'btnSearchFunctions').click()
@@ -38,10 +38,43 @@ for counter in range(0, len(menus)):
     search.send_keys(menus[counter])
 
     time.sleep(3)
+    
+    # if result contains multiple menus
+    # find the menu in question and click download
 
+    row_number = 1 # starts from first row
+    col1 = menus[counter] # function code/menu item
+    # get search result
+    try:
+        # menu name
+        result = driver.find_element(By.CSS_SELECTOR, "#functionsTable td:nth-child(2)")
+    except:
+        # print('No match found')
+        continue            
+    
+    # if result available:
+    # capture fields learnt
+    fields_learnt = driver.find_element(By.CSS_SELECTOR, f"#functionsTable > tbody > tr:nth-child({row_number}) > td:nth-child(7)").get_attribute('innerHTML')
+
+    #Do...While loop
+    while col1 != result.get_attribute('innerHTML'):
+        row_number = row_number+1
+        # get search result
+        try:
+            # menu name
+            result = driver.find_element(By.CSS_SELECTOR, f"#functionsTable > tbody > tr:nth-child({row_number}) > td:nth-child(2)")
+        except:
+            # print('No match found')
+            continue            
+        
+        # if result available:
+        #   take the application option
+        fields_learnt = driver.find_element(By.CSS_SELECTOR, f"#functionsTable > tbody > tr:nth-child({row_number}) > td:nth-child(7)").get_attribute('innerHTML')
+        
+    
     # Click download
     try:
-        driver.find_element(By.CSS_SELECTOR, '#functionsTable > tbody > tr > td:nth-child(6) > a').click()
+        driver.find_element(By.CSS_SELECTOR, f"#functionsTable > tbody > tr:nth-child({row_number}) > td:nth-child(6) > a").click()
     except:
         print('Download button not found')
 
@@ -56,11 +89,10 @@ for counter in range(0, len(menus)):
     # click go
     driver.find_element(By.ID, "btnOk").click()
 
-    time.sleep(1)
+    time.sleep(2)
 
     # leave the child frame
     driver.switch_to.parent_frame()
-    
-    time.sleep(1)
+
 
 logout()

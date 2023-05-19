@@ -70,6 +70,7 @@ def switch_to_content_frame():
 
         # switch to selected iframe
     driver.switch_to.frame(iframe)
+
   
 # print(menus)
 
@@ -78,11 +79,15 @@ def switch_to_content_frame():
 def logout():
 
     # leave the frame
-    driver.switch_to.parent_frame()
+    driver.switch_to.default_content()
+    # driver.switch_to.parent_frame()
+    time.sleep(10)
 
     #logout
-    driver.find_element(By.ID, 'logout').click()
-    print('🎇 Test completed successfully! 🎇')
+    try:
+        driver.find_element(By.ID, 'logout').click()
+    except:
+        print('🎇 Test completed successfully! 🎇')
 
-    time.sleep(3)
+    time.sleep(2)
     driver.quit()
