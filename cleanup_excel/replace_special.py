@@ -11,6 +11,7 @@ def home():
 
 @app.route('/', methods=['POST'])
 def upload_file():
+    global file
     file = request.files['file']
     try:
         df = pd.read_excel(file)
@@ -39,6 +40,7 @@ def upload_file():
 
     # Save the cleaned DataFrame to a new Excel file
     df.to_excel("./output/cleaned_example.xlsx", index=False)
+    # df.to_excel(f"./output/{file.filename}", index=False)
 
     print('\nClean up completed successfully! ✨')
     # Return a link to download the processed data
@@ -53,6 +55,7 @@ def upload_file():
 @app.route('/download')
 def download_file():
     return send_file('./output/cleaned_example.xlsx', as_attachment=True)
+    # return send_file(f"./output/{file.filename}", as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=True)
