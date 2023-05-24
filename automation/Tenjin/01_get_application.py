@@ -28,6 +28,7 @@ select = Select(driver.find_element(By.CSS_SELECTOR, 'select#application'))
 options = select.options
 
 counter = 1
+row_number = 1 # starts from first row
 
 while counter <= len(menus):
     initial_learnt = 0
@@ -91,33 +92,39 @@ while counter <= len(menus):
 
         # loop through child elements of results tbody
         parent_node = driver.find_element(By.CSS_SELECTOR, f"#functionsTable > tbody")
+        
         # child_nodes = parent_node.find_elements(By.XPATH, "./child::*")
         child_nodes = parent_node.find_elements(By.XPATH, "./tr")
 
         # print(len(child_nodes))
 
         for item in child_nodes:
-            # print(item.get_attribute('innerHTML'))
 
             # get search result
             try:
                 # menu name
-                result = driver.find_element(By.CSS_SELECTOR, "#functionsTable td:nth-child(2)")
+                # result = driver.find_element(By.CSS_SELECTOR, "#functionsTable td:nth-child(2)")
+                result = driver.find_element(By.CSS_SELECTOR, f"#functionsTable > tbody > tr:nth-child({row_number}) > td:nth-child(2)")
+                                
             except:
                 # print('No match found')
                 continue            
             
             # if result available:
             # capture fields learnt
-            fields_learnt = driver.find_element(By.CSS_SELECTOR, f"#functionsTable > tbody > tr > td:nth-child(7)").get_attribute('innerHTML')
-        
+            fields_learnt = driver.find_element(By.CSS_SELECTOR, f"#functionsTable > tbody > tr:nth-child({row_number}) > td:nth-child(7)").get_attribute('innerHTML')
+
+            row_number = row_number+1 # loop through each child row in results
+            
+            # print(result.get_attribute('innerHTML'), " ", fields_learnt) # view results of search
+
             if col1 == result.get_attribute('innerHTML'):
                 if fields_learnt != 'N/A':
                     no_of_fields = int(fields_learnt) # convert to integer
                     if no_of_fields > initial_learnt:
                         initial_learnt = no_of_fields
                         col2 = getOption                
-                
+               
     # insert row to 2d array
     array_out.insert(counter, [col1, col2, initial_learnt])
 
