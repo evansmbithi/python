@@ -19,6 +19,10 @@ driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install())
 driver.maximize_window()
 driver.get("http://172.16.20.146:8083/TenjinWeb/")
 
+def validate_search(input):
+    menu_name = str(input).replace(" ", "")
+    return menu_name
+
 def login():
     userid = driver.find_element(By.ID, 'txtLoginName')
     userid.send_keys(config['USERID'])

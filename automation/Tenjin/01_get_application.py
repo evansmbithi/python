@@ -4,7 +4,7 @@ import datetime
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
-from script import switch_to_content_frame, driver, logout
+from script import switch_to_content_frame, driver, validate_search, logout
 
 switch_to_content_frame()
 
@@ -40,7 +40,7 @@ with open('log.txt', 'a+') as logs: # 'a+' Append to existing. Creates a new fil
 
     while counter <= len(menus):
         initial_learnt = 0
-        col1 = ''
+        search_input = ''
         col2 = ''
         try:
             print(counter, ',', menus[counter])
@@ -62,12 +62,12 @@ with open('log.txt', 'a+') as logs: # 'a+' Append to existing. Creates a new fil
 
             time.sleep(2)
 
+            row_number = 1
+            search_input = validate_search(menus[counter]) # function code/menu item
+
             # find search input and pass menu
             search = driver.find_element(By.ID, 'functionsTable_search')
-            search.send_keys(menus[counter])
-
-            row_number = 1
-            col1 = menus[counter] # function code/menu item
+            search.send_keys(search_input)
 
             #Do...While loop
 
@@ -84,7 +84,7 @@ with open('log.txt', 'a+') as logs: # 'a+' Append to existing. Creates a new fil
             # fields_learnt = driver.find_element(By.CSS_SELECTOR, f"#functionsTable > tbody > tr:nth-child({row_number}) > td:nth-child(7)").get_attribute('innerHTML')
             
         
-            # while col1 != result.get_attribute('innerHTML'):
+            # while search_input != result.get_attribute('innerHTML'):
                 
             #     # get search result
             #     try:
@@ -130,7 +130,7 @@ with open('log.txt', 'a+') as logs: # 'a+' Append to existing. Creates a new fil
                 log = f"{result.get_attribute('innerHTML')}\t\t{getOption}\t\t{fields_learnt}\n"
                 logs.write(log) # write results to log.txt
 
-                if col1 == result.get_attribute('innerHTML'):
+                if search_input == result.get_attribute('innerHTML'):
                     if fields_learnt != 'N/A':
                         no_of_fields = int(fields_learnt) # convert to integer
                         if no_of_fields > initial_learnt:
@@ -138,7 +138,7 @@ with open('log.txt', 'a+') as logs: # 'a+' Append to existing. Creates a new fil
                             col2 = getOption                
                 
         # insert row to 2d array
-        array_out.insert(counter, [col1, col2, initial_learnt])
+        array_out.insert(counter, [search_input, col2, initial_learnt])
 
         # write to csv
         with open('output.csv', mode='w', newline='') as file:
