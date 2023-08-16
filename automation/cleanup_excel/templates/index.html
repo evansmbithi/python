@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel cleanup</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+    <style>
+        .center-item{
+            /* text-align: center; */
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .message{
+          padding-top: 20px;
+        }
+
+        .error {          
+          color: brown;
+        }
+
+        .success {          
+          color: #019e01;
+        }
+
+        .box{
+          margin: 0;
+          min-width: 400px;
+          height: 100px;
+          display: flex;
+          flex-flow: column nowrap;
+          justify-content: center;
+          align-items: center;
+          overflow: hidden;
+          position:relative
+          
+        }
+
+        .box:hover{
+          border: 1px dotted saddlebrown;          
+        }
+
+        #hover-on.hover::after{
+          content: "Drop Here";
+          text-align: center;
+          padding-top: 30px;
+          width: 100%;
+          height: 100%;
+          background-color: aliceblue;
+          z-index: 100;
+        }
+
+        #hover-on::before{
+          content: "Drag or Click to select File";
+          text-align: center;
+          position: absolute;
+          top: 30px;
+          width: 100%;
+          height: 100%;
+          /* border: 5px dashed saddlebrown;   */
+        }
+
+       
+        input[type='file']{
+          padding-top: 300px;
+          padding-right: 600px;
+          position: absolute;
+          left: -25%;
+          bottom: 0;
+          z-index: 1000;
+          cursor: pointer;
+          width: 100%;
+        }      
+        
+
+        fieldset {
+          background-color: #eeeeee;
+        }
+
+        legend {
+          background-color: gray;
+          color: white;
+          padding: 5px 10px;
+        }
+
+        .btn-group{
+          display: block;
+          text-align: center;
+          padding: 10px;
+        }
+
+        
+    </style>
+</head>
+<body>
+    <div class="container center-item">
+      <h2>Replace [*/()#.,] with _</h2> 
+        <form method="post" enctype="multipart/form-data">           
+          <fieldset>
+            <legend>Upload File</legend>
+              <div id="hover-on" class="form-group box">
+                <!-- <label for="name">Drag or Click to select File</label> -->
+                <input type="file" name="file">
+              </div>
+              <div class="btn-group">
+                <button type="submit" class="btn btn-primary">Upload</button>
+              </div>          
+          </fieldset>          
+        </form>
+
+        <div class="message">
+          <span class="error">{{ display_error }} </span>
+          <span class="success">{{ success_message }}</span>
+                  
+        </div>
+      </div> 
+      
+      <script>
+        // append download btn upon success
+        const dropZone = document.getElementById('hover-on');
+        const message = document.querySelector('.message')
+        const success = document.querySelector('.message > span.success')
+        let download = document.createElement("a")
+        download.setAttribute("href", "/download")
+        download.innerText = "Download File"
+  
+        if (success.innerText.length > 0){
+          success.append(download)                  
+        }
+
+        setTimeout(()=>{
+            message.style.visibility = "hidden"
+          }, 5000)
+          
+        // hover on drag   
+        // Prevent default behavior to allow dropping files
+        dropZone.addEventListener('dragover', function(event) {
+          event.preventDefault();
+        });
+
+        // Change background when a file is dragged into the drop zone
+        dropZone.addEventListener('dragenter', function() {
+          this.classList.add('hover');
+        });
+
+        // Reset background when the dragged file leaves the drop zone
+        dropZone.addEventListener('dragleave', function() {
+          this.classList.remove('hover');
+        }); 
+        
+        // Handle dropped file
+        dropZone.addEventListener('drop', function(event) {
+          // event.preventDefault();
+          // this.style.color = 'green';
+          this.classList.remove('hover');
+        });
+  
+      </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+</body>
+</html>
