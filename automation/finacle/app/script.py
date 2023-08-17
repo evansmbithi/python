@@ -121,11 +121,10 @@ def relogin():
     try:
         wait = WebDriverWait(driver, 10)
         loginbtn = wait.until(EC.element_to_be_clickable((By.NAME, 'Submit2')))
-        print(loginbtn)
         loginbtn.click()
         login()
     except:
-        print('Unable to login')
+        # print('Unable to login')
         reset_session()
         
 def search_menu(menu):
@@ -181,8 +180,7 @@ def error_on_acc(acc_no):
             return error_display.get_attribute('class')
         except:
             # print(acc_no)   
-            return ''  
-            
+            return ''    
     else:
         print('You are probably not in FormArea!!')
 
@@ -229,9 +227,9 @@ def logout():
     exit()
 
 
-    ####### REF #######
-    # https://github.com/SergeyPirogov/webdriver_manager
+####### REF #######
+# https://github.com/SergeyPirogov/webdriver_manager
 
-    # change stdout encoding
-    # http://xahlee.info/python/python_io_encoding.html
-    # https://stackoverflow.com/questions/4374455/how-to-set-sys-stdout-encoding-in-python-3
+# change stdout encoding
+# http://xahlee.info/python/python_io_encoding.html
+# https://stackoverflow.com/questions/4374455/how-to-set-sys-stdout-encoding-in-python-3
