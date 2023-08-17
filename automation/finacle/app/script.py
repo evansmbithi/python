@@ -179,9 +179,9 @@ def error_on_acc(acc_no):
             wait = WebDriverWait(driver, 10)
             error_display = wait.until(EC.visibility_of_element_located((By.ID, 'errorPane_Pld')))
             return error_display.get_attribute('class')
-            # print(f'class is {get_class}.')
         except:
-            print(acc_no)     
+            # print(acc_no)   
+            return ''  
             
     else:
         print('You are probably not in FormArea!!')
