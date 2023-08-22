@@ -2,8 +2,7 @@ from flask import Flask, request, render_template, send_file
 import pandas as pd
 
 app = Flask(__name__)
-regex = '[^a-zA-Z0-9]'
-
+# regex = '[^a-zA-Z0-9]'
 
 @app.route('/')
 def home():
@@ -12,46 +11,96 @@ def home():
 @app.route('/', methods=['POST'])
 def upload_file():
     global file
-    file = request.files['file']
-    try:
-        df = pd.read_excel(file)
-    except:
-        file_error = 'Please upload a TestCase template'
-        return render_template(
-                'index.html',
-                display_error = file_error
+    global df
+    global labels
+    global file_name
+
+    if 'upload' in request.form: #'upload' button name
+        file = request.files['file']
+        file_name = file.filename
+        try:
+            df = pd.read_excel(file)
+        except:
+            file_error = 'Please upload an excel file'
+            return render_template(
+                    'index.html',
+                    display_error = file_error
+                    )
+        
+        # Extract labels (header row)
+        labels = df.columns.tolist()
+        # print(labels)
+
+        return render_template('columns.html', elements=labels, file_name=file_name)
+    
+    elif 'submit' in request.form: #'submit' button name
+        selected_options = request.form.getlist('checkboxes')
+        replacer = request.form['replacement']
+        
+        try:
+            replacee = request.form['replacement_choice']
+        except:
+            error_msg = "Please choose replacement option"
+            return render_template(
+                'columns.html',
+                replace_error = error_msg,
+                elements=labels,
+                file_name=file_name
                 )
-    
-    def clean_data(*chars,col=df):
-        for char in chars:
-            col['NAME'] = col['NAME'].str.replace(char,'_')
-            # col['STEP_ID'] = col['STEP_ID'].str.replace(char,'_')
-        return col
-    
-    # Remove special characters from Column 'NAME'
-    try:
-        [clean_data(regex,'__') for _ in range(5)] # run five times
-    except KeyError:
-        column_error = "'Name' column is not available in this file. Please upload a TestCase template"
+            
+        if selected_options == []:
+            error_msg = "Please select a column to proceed"
+            return render_template(
+                'columns.html',
+                column_error = error_msg,
+                elements=labels,
+                file_name=file_name                
+                )
+        def replace_values(value):
+            if isinstance(value, str):
+                return value.replace(',', '.')
+            return value
+        #clean up
+        def clean_data(option,rep,*chars,col=df):
+            for char in chars:
+                # col['STEP_ID'] = col['STEP_ID'].str.replace(char,'_') # Can only use .str accessor with string values!
+                # col[option] = col[option].apply(str).str.replace(char,rep) # had NaN issue
+                col[option] = col[option].apply(
+                                            lambda x: x.replace(char,rep)
+                                            if isinstance(x, str)
+                                            else x
+                                        )
+                # It only calls the replace() method if the supplied value is a string.
+                # Otherwise, the value is returned as is.
+                # https://bobbyhadz.com/blog/can-only-use-str-accessor-with-string-values-in-python
+            return col
+        
+        # Remove special characters from selected Columns
+        for column in selected_options:
+            try:
+                [clean_data(column,replacer,replacee,'__') for _ in range(4)] # run four times
+            except KeyError:
+                column_error = f"'{column}' is not available as a column in this file."
+                return render_template(
+                    'index.html',
+                    display_error = column_error
+                    )
+            
+
+        # Save the cleaned DataFrame to a new Excel file
+        df.to_excel("./output/cleaned_example.xlsx", index=False)
+        # df.to_excel(f"./output/{file.filename}", index=False)
+
+        print('\nClean up completed successfully! ✨')
+        # Return a link to download the processed data
+        # btn = f'<a href="/download">Download processed data</a>'
+        success_message = "Clean up completed successfully! ✨"
         return render_template(
-            'index.html',
-            display_error = column_error
-            )
-         
-
-    # Save the cleaned DataFrame to a new Excel file
-    df.to_excel("./output/cleaned_example.xlsx", index=False)
-    # df.to_excel(f"./output/{file.filename}", index=False)
-
-    print('\nClean up completed successfully! ✨')
-    # Return a link to download the processed data
-    # btn = f'<a href="/download">Download processed data</a>'
-    success_message = "Clean up completed successfully! ✨"
-    return render_template(
-                            'index.html',
-                            success_message = success_message
-                            )
-   
+                                'index.html',
+                                success_message = success_message
+                                )
+    elif 'back' in request.form:
+        return render_template('index.html')
 
 @app.route('/download')
 def download_file():
