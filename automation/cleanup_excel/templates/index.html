@@ -19,6 +19,7 @@
         
         .message{
           padding-top: 20px;
+          text-align: center;
         }
 
         .error {          
@@ -125,7 +126,8 @@
 
         <div class="message">
           <span class="error">{{ display_error }} </span>
-          <span class="success">{{ success_message }}</span>                  
+          <span class="error">{{ alert_msg }} </span>  <br>
+          <span class="success">{{ success_message }}</span>                          
         </div>
         
       </div> 
@@ -161,7 +163,7 @@
 
         setTimeout(()=>{
             message.style.visibility = "hidden"
-          }, 5000)
+          }, 10000)
           
         // hover on drag   
         // Prevent default behavior to allow dropping files
