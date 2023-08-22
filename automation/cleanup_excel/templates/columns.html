@@ -141,7 +141,7 @@
       <!-- <h2>Replace [*/()#.,] with _</h2>  -->
         <form method="post" enctype="multipart/form-data">           
           <fieldset>
-            <legend>Remove:</legend>
+            <legend>Find:</legend>
               <div class="form-group replace-box">
                 <div>
                   <input type="radio" name="replacement_choice" value="[0-9]"> All Numbers <br>
@@ -151,7 +151,7 @@
                   <input type="radio" name="replacement_choice" value="[^a-zA-Z0-9]" checked> All Symbols and spaces <br>
                 </div>
                 <div>
-                  <p>Replace with:</p>
+                  <p><strong>Replace with:</strong> (Leave blank to remove the above)</p>
                   <input type="text" name="replacement" placeholder="*,-.+=!@_" value="_">
                 </div>
                 
