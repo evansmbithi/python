@@ -60,15 +60,12 @@ def upload_file():
         #clean up
         def clean_data(option,rep,*chars,col=df):
             for char in chars:
-                # col['STEP_ID'] = col['STEP_ID'].str.replace(char,'_') # Error: Can only use .str accessor with string values!
-                col[option] = col[option].apply(str).str.replace(char,rep) # Convert all values to string # has a NaN issue                
-                # col[option] = col[option].apply(
-                #                             lambda x: x.replace(char,rep)
-                #                             if isinstance(x, str)
-                #                             else x
-                #                         )
-                # It only calls the replace() method if the supplied value is a string.
-                # Otherwise, the value is returned as is.                
+                # col['STEP_ID'] = col['STEP_ID'].str.replace(char,'_') # Error: Can only use .str accessor with string values!    
+                try:
+                    col[option] = col[option].str.replace(char,rep)   
+                except:
+                    # print('Blank cell') 
+                    continue        
             return col
         
         # Remove special characters from selected Columns
@@ -113,5 +110,13 @@ if __name__ == '__main__':
 # Error: Can only use .str accessor with string values!
 # https://towardsdatascience.com/5-methods-to-check-for-nan-values-in-in-python-3f21ddd17eed
 
-
 # https://bobbyhadz.com/blog/can-only-use-str-accessor-with-string-values-in-python
+
+# col[option] = col[option].apply(str).str.replace(char,rep) # Convert all values to string # has a NaN issue                
+# col[option] = col[option].apply(
+#                             lambda x: x.replace(char,rep)
+#                             if isinstance(x, str)
+#                             else x
+#                         )
+# It only calls the replace() method if the supplied value is a string.
+# Otherwise, the value is returned as is.
