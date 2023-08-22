@@ -43,7 +43,6 @@ def upload_file():
             error_msg = "Please choose replacement option"
             return render_template(
                 'columns.html',
-                replace_error = error_msg,
                 elements=labels,
                 file_name=file_name
                 )
@@ -52,7 +51,6 @@ def upload_file():
             error_msg = "Please select a column to proceed"
             return render_template(
                 'columns.html',
-                column_error = error_msg,
                 elements=labels,
                 file_name=file_name                
                 )
@@ -93,7 +91,6 @@ def upload_file():
         return render_template(
                                 'index.html',
                                 success_message = success_message,
-                                alert_msg=alert_msg
                                 )
     elif 'back' in request.form:
         return render_template('index.html')
