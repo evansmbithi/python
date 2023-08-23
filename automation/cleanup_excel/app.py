@@ -52,6 +52,7 @@ def upload_file():
             return render_template(
                 'columns.html',
                 elements=labels,
+                column_error=error_msg,
                 file_name=file_name                
                 )
 
