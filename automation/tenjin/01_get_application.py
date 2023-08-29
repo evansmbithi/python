@@ -1,6 +1,7 @@
 import csv
 import time
 import datetime
+import pandas as pd
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
@@ -8,16 +9,28 @@ from script import switch_to_content_frame, driver, validate_search, logout
 
 switch_to_content_frame()
 
+#=====OLD=====
 # read csv file and extract menus
-with open('menus.csv', newline='') as csvfile:
-    reader = csv.reader(csvfile, delimiter=',')
+# with open('menus.csv', newline='') as csvfile:
+#     reader = csv.reader(csvfile, delimiter=',')
 
-    # Initialize an empty list to store the column data
-    menus = []
+#     # Initialize an empty list to store the column data
+#     menus = []
 
-    # Loop through each row in the first column
-    for row in reader:        
-        menus.append(row[0])
+#     # Loop through each row in the first column
+#     for row in reader:        
+#         menus.append(row[0])
+
+#====NEW=====
+input = 'menus.csv'
+try:
+    df = pd.read_csv(input)
+except:
+    print(f"Please create '{input}' with column 'MENUS'")
+    
+menus = df['MENUS'].unique() # remove duplicates
+# menus = data.insert(0,'MENUS')
+# print(menus)
 
 # 2d array to be converted to csv
 array_out = [
@@ -39,11 +52,12 @@ with open('log.txt', 'a+') as logs: # 'a+' Append to existing. Creates a new fil
     logs.write(log_header)
 
     while counter <= len(menus):
+        menu = menus[counter-1]
         initial_learnt = 0
         search_input = ''
         col2 = ''
         try:
-            print(counter, ',', menus[counter])
+            print(counter, ',', menu)
         except IndexError:
             print('Process Complete')
             break
@@ -63,7 +77,7 @@ with open('log.txt', 'a+') as logs: # 'a+' Append to existing. Creates a new fil
             time.sleep(2)
 
             row_number = 1
-            search_input = validate_search(menus[counter]) # function code/menu item
+            search_input = validate_search(menu) # function code/menu item
 
             # find search input and pass menu
             search = driver.find_element(By.ID, 'functionsTable_search')
